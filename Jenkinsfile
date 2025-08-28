@@ -54,10 +54,10 @@ pipeline {
                     
                     sh """
                         # stop and remove any leftover test container
-                        docker rm -f ${testContainer} 2>/dev/bull || true
+                        docker rm -f ${testContainer} 2>/dev/null || true
 
                         # Run new test container on port 8081
-                        docker run -d --name testContainer -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
+                        docker run -d --name ${testContainer} -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                         sleep 10
                         response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081 || echo "000")
                         if [ "\$response" != "200" ]; then
@@ -66,8 +66,8 @@ pipeline {
                         else
                             echo "Build test passed"
                         fi
-                        docker stop test-Container
-                        docker rm -f test-Container
+                        docker stop ${testContainer}
+                        docker rm -f ${testContainer}
                         echo "Build test completed successfully"
                     """
                 }
