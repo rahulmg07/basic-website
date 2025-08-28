@@ -49,8 +49,15 @@ pipeline {
             steps {
                 script {
                     echo "Testing Docker image build..."
+
+                    def testContainer = "test-container"
+                    
                     sh """
-                        docker run -d --name test-container-${env.BUILD_NUMBER} -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
+                        # stop and remove any leftover test container
+                        docker rm -f ${testContainer} 2>/dev/bull || true
+
+                        # Run new test container on port 8081
+                        docker run -d --name testContainer -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                         sleep 10
                         response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
                         if [ "\$response" != "200" ]; then
@@ -59,8 +66,8 @@ pipeline {
                             echo "Build test passed"
                             exit 1
                         fi
-                        docker stop test-container-${env.BUILD_NUMBER}
-                        docker rm test-container-${env.BUILD_NUMBER}
+                        docker stop test-Container
+                        docker rm -f test-Container
                         echo "Build test completed successfully"
                     """
                 }
