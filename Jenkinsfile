@@ -18,6 +18,7 @@ pipeline {
         stage('Validate') {
             steps {
                 script {
+                    echo "Validating repository structure..."
                     sh '''
                         if [ ! -f "index.html" ]; then
                             echo "Error: index.html not found!"
@@ -32,11 +33,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    echo "Building Docker image for branch: ${env.BRANCH_NAME}"
                     def imageTag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                     env.IMAGE_TAG = imageTag
                     sh """
                         docker build -t ${env.IMAGE_NAME}:${env.IMAGE_TAG} .
                         docker tag ${env.IMAGE_NAME}:${env.IMAGE_TAG} ${env.IMAGE_NAME}:${env.BRANCH_NAME}-latest
+                        echo "DOCKER IMAGE BUILT SUCCESSFULLY: ${env.IMAGE_NAME}:${env.IMAGE_TAG}"
                     """
                 }
             }
@@ -45,16 +48,20 @@ pipeline {
         stage('Test Build') {
             steps {
                 script {
+                    echo "Testing Docker image build..."
                     sh """
                         docker run -d --name test-container-${env.BUILD_NUMBER} -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                         sleep 10
                         response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
                         if [ "\$response" != "200" ]; then
                             echo "Build test failed"
+                        else
+                            echo "Build test passed"
                             exit 1
                         fi
                         docker stop test-container-${env.BUILD_NUMBER}
                         docker rm test-container-${env.BUILD_NUMBER}
+                        echo "Build test completed successfully"
                     """
                 }
             }
