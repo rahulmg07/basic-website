@@ -92,9 +92,9 @@ pipeline {
     post {
         always {
             sh '''
-                docker ps -aq --filter "name=test-container" | xargs -r docker rm -f || true
-                docker image prune -f || true
-                echo "Cleanup completed"
+            # docker ps -aq --filter "name=test-container" | xargs -r docker rm -f || true
+            # docker image prune -f || true
+            echo "Skipping cleanup for debugging"
             '''
         }
     }
