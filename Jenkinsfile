@@ -58,7 +58,7 @@ pipeline {
 
                         # Run new test container on port 8081
                         docker run -d --name ${testContainer} -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
-                        sleep 10
+                        sleep 20
                         response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081 || echo "000")
                         if [ "\$response" != "200" ]; then
                             echo "Build test failed"
