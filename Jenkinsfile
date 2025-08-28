@@ -32,12 +32,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def imageTag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+                    env.Image_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                     sh """
                         docker build -t ${env.IMAGE_NAME}:${env.imageTag} .
                         docker tag ${env.IMAGE_NAME}:${env.imageTag} ${env.IMAGE_NAME}:${env.BRANCH_NAME}-latest
                     """
-                    env.IMAGE_TAG = imageTag
                 }
             }
         }
