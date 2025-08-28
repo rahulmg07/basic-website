@@ -34,8 +34,8 @@ pipeline {
                 script {
                     def imageTag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                     sh """
-                        docker build -t ${IMAGE_NAME}:${imageTag} .
-                        docker tag ${IMAGE_NAME}:${imageTag} ${IMAGE_NAME}:${env.BRANCH_NAME}-latest
+                        docker build -t ${env.IMAGE_NAME}:${env.imageTag} .
+                        docker tag ${env.IMAGE_NAME}:${env.imageTag} ${env.IMAGE_NAME}:${env.BRANCH_NAME}-latest
                     """
                     env.IMAGE_TAG = imageTag
                 }
@@ -46,15 +46,15 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker run -d --name test-container-${BUILD_NUMBER} -p 8080:80 ${IMAGE_NAME}:${env.IMAGE_TAG}
+                        docker run -d --name test-container-${env.BUILD_NUMBER} -p 8080:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                         sleep 10
                         response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
                         if [ "\$response" != "200" ]; then
                             echo "Build test failed"
                             exit 1
                         fi
-                        docker stop test-container-${BUILD_NUMBER}
-                        docker rm test-container-${BUILD_NUMBER}
+                        docker stop test-container-${env.BUILD_NUMBER}
+                        docker rm test-container-${env.BUILD_NUMBER}
                     """
                 }
             }
@@ -67,11 +67,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker stop ${PROD_CONTAINER_NAME} 2>/dev/null || true
-                        docker rm ${PROD_CONTAINER_NAME} 2>/dev/null || true
-                        docker run -d --name ${PROD_CONTAINER_NAME} -p ${PROD_PORT}:80 --restart unless-stopped ${IMAGE_NAME}:${env.IMAGE_TAG}
+                        docker stop ${env.PROD_CONTAINER_NAME} 2>/dev/null || true
+                        docker rm ${env.PROD_CONTAINER_NAME} 2>/dev/null || true
+                        docker run -d --name ${env.PROD_CONTAINER_NAME} -p ${env.PROD_PORT}:80 --restart unless-stopped ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                     """
-                    echo "Production deployed successfully on port ${PROD_PORT}"
+                    echo "Production deployed successfully on port ${env.PROD_PORT}"
                 }
             }
         }
