@@ -32,10 +32,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    env.Image_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+                    def imageTag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+                    env.IMAGE_TAG = imageTag
                     sh """
-                        docker build -t ${env.IMAGE_NAME}:${env.imageTag} .
-                        docker tag ${env.IMAGE_NAME}:${env.imageTag} ${env.IMAGE_NAME}:${env.BRANCH_NAME}-latest
+                        docker build -t ${env.IMAGE_NAME}:${env.IMAGE_TAG} .
+                        docker tag ${env.IMAGE_NAME}:${env.IMAGE_TAG} ${env.IMAGE_NAME}:${env.BRANCH_NAME}-latest
                     """
                 }
             }
@@ -45,7 +46,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker run -d --name test-container-${env.BUILD_NUMBER} -p 8080:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
+                        docker run -d --name test-container-${env.BUILD_NUMBER} -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                         sleep 10
                         response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
                         if [ "\$response" != "200" ]; then
