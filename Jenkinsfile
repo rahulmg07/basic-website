@@ -66,8 +66,6 @@ pipeline {
                         else
                             echo "Build test passed"
                         fi
-                        docker stop ${testContainer}
-                        docker rm -f ${testContainer}
                         echo "Build test completed successfully"
                     """
                 }
