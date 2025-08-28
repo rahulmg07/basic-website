@@ -35,8 +35,8 @@ pipeline {
                     def imageTag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                     env.IMAGE_TAG = imageTag
                     sh """
-                        docker build -t ${env.IMAGE_NAME}:${env.imageTag} .
-                        docker tag ${env.IMAGE_NAME}:${env.imageTag} ${env.IMAGE_NAME}:${env.BRANCH_NAME}-latest
+                        docker build -t ${env.IMAGE_NAME}:${env.IMAGE_TAG} .
+                        docker tag ${env.IMAGE_NAME}:${env.IMAGE_TAG} ${env.IMAGE_NAME}:${env.BRANCH_NAME}-latest
                     """
                 }
             }
