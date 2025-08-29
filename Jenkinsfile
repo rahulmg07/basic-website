@@ -1,21 +1,5 @@
 pipeline {
     agent any
-
-     triggers {
-    // Generic Webhook Trigger must go here, not in properties()
-    GenericTrigger(
-      genericVariables: [
-        [key: 'ref',     value: '$.ref'],
-        [key: 'pusher',  value: '$.pusher.name']
-      ],
-      causeString:             'Triggered by $pusher on $ref',
-      token:                   'your-webhook-token',
-      printContributedVariables: true,
-      printPostContent:        true,
-      regexpFilterText:        '$ref',
-      regexpFilterExpression:  'refs/heads/.*'
-    )
-  }
     
     environment {
         IMAGE_NAME = 'website-app'
@@ -23,11 +7,6 @@ pipeline {
         PROD_PORT = '82'
     }
       stages {
-           stage('Build Info') {
-      steps {
-        echo "Triggered by ${pusher} on ${ref}"
-        } 
-        }
         stage('Checkout') {
             steps {
                 echo "Checking out branch: ${env.BRANCH_NAME}"
