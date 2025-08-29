@@ -59,7 +59,7 @@ pipeline {
                         # Run new test container on port 8081
                         docker run -d --name ${testContainer} -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                         sleep 20
-                        response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
+                        response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081 || echo "000")
                         if [ "\$response" != "200" ]; then
                             echo "Build test failed"
                             exit 1
@@ -92,8 +92,8 @@ pipeline {
     post {
         always {
             sh '''
-            # docker ps -aq --filter "name=test-container" | xargs -r docker rm -f || true
-            # docker image prune -f || true
+            docker ps -aq --filter "name=test-container" | xargs -r docker rm -f || true
+            docker image prune -f || true
             echo "Skipping cleanup for debugging"
             '''
         }
