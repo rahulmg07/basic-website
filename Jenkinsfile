@@ -1,5 +1,6 @@
 pipeline {
     agent any
+<<<<<<< HEAD
 
      triggers {
     // Generic Webhook Trigger must go here, not in properties()
@@ -16,6 +17,8 @@ pipeline {
       regexpFilterExpression:  'refs/heads/.*'
     )
   }
+=======
+>>>>>>> 961e796b7be2c779d3aa290074235e6929d758ae
     
     environment {
         IMAGE_NAME = 'website-app'
@@ -23,11 +26,14 @@ pipeline {
         PROD_PORT = '82'
     }
       stages {
+<<<<<<< HEAD
            stage('Build Info') {
       steps {
         echo "Triggered by ${pusher} on ${ref}"
         } 
         }
+=======
+>>>>>>> 961e796b7be2c779d3aa290074235e6929d758ae
         stage('Checkout') {
             steps {
                 echo "Checking out branch: ${env.BRANCH_NAME}"
