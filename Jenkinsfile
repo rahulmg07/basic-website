@@ -16,17 +16,19 @@ pipeline {
       regexpFilterExpression:  'refs/heads/.*'
     )
   }
+    
+    environment {
+        IMAGE_NAME = 'website-app'
+        PROD_CONTAINER_NAME = 'website-prod'
+        PROD_PORT = '82'
+    }
     stages {
     stage('Build Info') {
       steps {
         echo "Triggered by ${pusher} on ${ref}"
       }
     }
-    environment {
-        IMAGE_NAME = 'website-app'
-        PROD_CONTAINER_NAME = 'website-prod'
-        PROD_PORT = '82'
-    }
+  }
 
     stages {
         stage('Checkout') {
