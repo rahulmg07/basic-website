@@ -22,15 +22,11 @@ pipeline {
         PROD_CONTAINER_NAME = 'website-prod'
         PROD_PORT = '82'
     }
-    stages {
-    stage('Build Info') {
+      stages {
+           stage('Build Info') {
       steps {
         echo "Triggered by ${pusher} on ${ref}"
-      }
-    }
-  }
-
-    stages {
+        }  
         stage('Checkout') {
             steps {
                 echo "Checking out branch: ${env.BRANCH_NAME}"
