@@ -51,15 +51,20 @@ pipeline {
                     echo "Testing Docker image build..."
 
                     def testContainer = "test-container"
+                    def networkName = "jenkins-test-network"
                     
                     sh """
+                        # Create network if it doesn't exist
+                        docker network create ${networkName} 2>/dev/null || true
+                        
                         # stop and remove any leftover test container
                         docker rm -f ${testContainer} 2>/dev/null || true
 
                         # Run new test container on port 8081
-                        docker run -d --name ${testContainer} -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
+                        docker run -d --name ${testContainer} --network ${networkName} -p 8081:80 ${env.IMAGE_NAME}:${env.IMAGE_TAG}
                         sleep 20
-                        response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081 || echo "000")
+                        
+                        response=\$(docker run --rm --network ${networkName} curlimages/curl -s -o /dev/null -w "%{http_code}" http://${testContainer}:80 || echo "000")
                         if [ "\$response" != "200" ]; then
                             echo "Build test failed"
                             exit 1
