@@ -1,23 +1,27 @@
 pipeline {
     agent any
 
-    properties([
-  pipelineTriggers([
-    [
-      $class: 'GenericTrigger',
+     triggers {
+    // Generic Webhook Trigger must go here, not in properties()
+    GenericTrigger(
       genericVariables: [
-        [key: 'ref', value: '$.ref'],
-        [key: 'pusher', value: '$.pusher.name']
+        [key: 'ref',     value: '$.ref'],
+        [key: 'pusher',  value: '$.pusher.name']
       ],
-      causeString: 'Triggered by GitHub push from $pusher on $ref',
-      token: 'rahul-webhook-token',
+      causeString:             'Triggered by $pusher on $ref',
+      token:                   'your-webhook-token',
       printContributedVariables: true,
-      printPostContent: true,
-      regexpFilterText: '$ref',
-      regexpFilterExpression: 'refs/heads/.*'
-    ]
-  ])
-])
+      printPostContent:        true,
+      regexpFilterText:        '$ref',
+      regexpFilterExpression:  'refs/heads/.*'
+    )
+  }
+    stages {
+    stage('Build Info') {
+      steps {
+        echo "Triggered by ${pusher} on ${ref}"
+      }
+    }
     environment {
         IMAGE_NAME = 'website-app'
         PROD_CONTAINER_NAME = 'website-prod'
