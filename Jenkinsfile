@@ -26,7 +26,8 @@ pipeline {
            stage('Build Info') {
       steps {
         echo "Triggered by ${pusher} on ${ref}"
-        }  
+        } 
+        }
         stage('Checkout') {
             steps {
                 echo "Checking out branch: ${env.BRANCH_NAME}"
