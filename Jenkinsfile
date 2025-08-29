@@ -1,6 +1,7 @@
 pipeline {
     agent any
 <<<<<<< HEAD
+<<<<<<< HEAD
 
      triggers {
     // Generic Webhook Trigger must go here, not in properties()
@@ -19,6 +20,8 @@ pipeline {
   }
 =======
 >>>>>>> 961e796b7be2c779d3aa290074235e6929d758ae
+=======
+>>>>>>> 0ddd973433c50101b32716cdbb6ce77b4627b20b
     
     environment {
         IMAGE_NAME = 'website-app'
@@ -27,6 +30,7 @@ pipeline {
     }
       stages {
 <<<<<<< HEAD
+<<<<<<< HEAD
            stage('Build Info') {
       steps {
         echo "Triggered by ${pusher} on ${ref}"
@@ -34,6 +38,8 @@ pipeline {
         }
 =======
 >>>>>>> 961e796b7be2c779d3aa290074235e6929d758ae
+=======
+>>>>>>> 0ddd973433c50101b32716cdbb6ce77b4627b20b
         stage('Checkout') {
             steps {
                 echo "Checking out branch: ${env.BRANCH_NAME}"
